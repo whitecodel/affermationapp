@@ -1,0 +1,61 @@
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    min-height: 100vh;
+    background-color: #ffffff;
+  }
+  
+  .login-form {
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 12px;
+    text-align: center;
+  
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+  
+      span {
+        color: #7a5cf1;
+      }
+    }
+  
+    .login-heading {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+  
+    .forgot-password {
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 20px;
+  
+      a {
+        font-size: 0.85rem;
+        color: #7a5cf1;
+      }
+    }
+  
+    .login-btn {
+      background-color: #7a5cf1;
+      border-color: #7a5cf1;
+      height: 40px;
+  
+      &:hover {
+        background-color: #6a4ae1;
+        border-color: #6a4ae1;
+      }
+    }
+  
+    .register-link {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+  }
+  

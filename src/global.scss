@@ -1,0 +1,12 @@
+/* GLOBAL fix to move required asterisk to the end */
+.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+    display: none ; // Remove the default asterisk
+  }
+  
+  .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+    content: ' *' !important;
+    color: red !important;
+    margin-left: 4px;
+    font-family: inherit;
+  }
+  

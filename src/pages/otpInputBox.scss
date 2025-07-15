@@ -1,0 +1,23 @@
+.otp-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px; 
+}
+
+.otp-container input {
+  width: 100% !important;
+  height: 52px;
+  border-radius: 6px;
+  background: #F5F5F5;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+  &:focus {
+    border-color: #45AE51; // Primary color on focus
+    background: #fff;
+  }
+}

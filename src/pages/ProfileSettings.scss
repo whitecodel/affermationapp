@@ -1,0 +1,170 @@
+.profile-wrapper {
+    padding: 30px;
+
+    .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30px;
+
+        .profile-set {
+            font-family: Inter;
+            font-weight: 700;
+            font-size: 24px;
+            line-height: 36px;
+            letter-spacing: 0%;
+            vertical-align: middle;
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        .profile-text {
+            font-family: Inter;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 100%;
+            letter-spacing: 0%;
+            vertical-align: middle;
+            color: #797979;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            .details {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+
+                .avatar {
+                    width: 40px;
+                    height: 40px;
+                    background: #e0e0e0;
+                    border-radius: 50%;
+                }
+
+                .name {
+                    font-weight: 600;
+                }
+
+                .email {
+                    font-size: 12px;
+                    color: #777;
+                }
+            }
+
+            .edit-btn {
+                border: 1px solid #8A5CFFCC;
+                background: #fff;
+                color: #8A5CFFCC;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 8px 14px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .settings {
+        h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .info-cards {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 25px;
+            padding: 40px 0px;
+
+            .info-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+
+                padding: 15px;
+                border-radius: 10px;
+                min-width: 250px;
+
+                .icon {
+                    background: #FFF8EB;
+                    padding: 10px;
+                    border-radius: 10px;
+                    font-size: 20px;
+                }
+
+                .label {
+                    font-family: Inter;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 100%;
+                    letter-spacing: 0%;
+                    vertical-align: middle;
+                    color: #000;
+                    margin-bottom: 15px;
+
+                }
+
+                .value {
+                    font-family: Inter;
+                    font-weight: 400;
+                    font-size: 16px;
+                    line-height: 100%;
+                    letter-spacing: 0%;
+                    vertical-align: middle;
+                    color: #555;
+                }
+            }
+        }
+
+        .change-password {
+            color: #8A5CFF;
+
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            background: none;
+
+            font-family: Inter;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 140%;
+
+
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+
+
+@media only screen and (max-width: 768px){
+    .profile-wrapper{
+        .settings{
+
+         .info-cards{
+            flex-wrap: wrap;
+        }
+    }
+    } 
+}
