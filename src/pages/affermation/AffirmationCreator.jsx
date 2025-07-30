@@ -70,39 +70,81 @@ const AffirmationCreator = () => {
     return () => clearTimeout(timer); // Cleanup if input changes quickly
   }, [searchInput]);
 
+  const [mode, setMode] = useState("text"); // "text" or "voice"
+  const [loadingVoiceGen, setLoadingVoiceGen] = useState(false);
+
   const handleGenerate = async () => {
     if (!title.trim()) {
       return toast.error("Please provide a title");
     }
 
-    if (!selectedVoice) {
-      return toast.error("Please select a voice");
-    }
-
-    if (!selectedTrackMp3) {
-      return toast.error("Please select a background track");
-    }
-
-    if (affirmations.length === 0) {
-      return toast.error("Please add at least one affirmation");
-    }
-
-    const payload = {
-      title: title,
-      speaker_id: selectedVoice,
-      background_music: selectedTrackMp3,
-      text: affirmations?.join(" ., "),
-    };
-    try {
-      const data = await dispatch(generateAffirmationAudio(payload));
-      if (data?.payload.status === 201) {
-        toast.success("Audio Generate Succesfully");
-        navigate("/dashboard");
-      } else {
-        toast.error(data?.payload?.message);
+    if (mode === "text") {
+      if (!selectedVoice) {
+        return toast.error("Please select a voice");
       }
-    } catch (err) {
-      toast.error(err?.payload?.message);
+      if (!selectedTrackMp3) {
+        return toast.error("Please select a background track");
+      }
+      if (affirmations.length === 0) {
+        return toast.error("Please add at least one affirmation");
+      }
+
+      const payload = {
+        title: title,
+        speaker_id: selectedVoice,
+        background_music: selectedTrackMp3,
+        text: affirmations?.join(" ., "),
+      };
+      try {
+        const data = await dispatch(generateAffirmationAudio(payload));
+        if (data?.payload.status === 201) {
+          toast.success("Audio Generate Succesfully");
+          navigate("/dashboard");
+        } else {
+          toast.error(data?.payload?.message);
+        }
+      } catch (err) {
+        toast.error(err?.payload?.message);
+      }
+    } else if (mode === "voice") {
+      // Voice Affirmation: use custom API
+      if (!recordedAudioBlob) {
+        return toast.error("Please record your affirmation first.");
+      }
+      if (!selectedTrackMp3) {
+        return toast.error("Please select a background track");
+      }
+      setLoadingVoiceGen(true);
+      try {
+        const formData = new FormData();
+        formData.append("speech", recordedAudioBlob, "recording.webm");
+        formData.append("background_music", selectedTrackMp3);
+        formData.append("title", title);
+
+        const response = await fetch(
+          "https://affirmix-backend-894609300755.us-central1.run.app/audiomix/audio-generate-record/",
+          {
+            method: "POST",
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzNzgyODY3LCJpYXQiOjE3NTM2OTY0NjcsImp0aSI6IjhlZWIxYzkwZTZlMDQ4Zjc4M2Q2ODU4ZTgwMmU4NmY3IiwidXNlcl9pZCI6IjM1NzFlMjJhLWU2ZGItNDYyMS1iMTMzLWNiNjE0YzZlZDA3MiJ9.EN74pNKGjTMnGAaFlDRBwFgstaBmZBt4KWtuUez2dyw",
+              "X-API-KEY": "affirm-2025",
+            },
+            body: formData,
+          }
+        );
+        const data = await response.json();
+        if (response.ok) {
+          toast.success("Voice affirmation generated successfully!");
+          navigate("/dashboard");
+        } else {
+          toast.error(data?.message || "Failed to generate audio.");
+        }
+      } catch (err) {
+        toast.error("Failed to generate audio.");
+      } finally {
+        setLoadingVoiceGen(false);
+      }
     }
   };
 
@@ -231,8 +273,6 @@ const AffirmationCreator = () => {
 
   const voiceOptions = ["John", "Michael", "Alex"];
   const trackOptions = ["Track 1", "Track 2", "Track 3"];
-
-  const [mode, setMode] = useState("text"); // "text" or "voice"
 
   return (
     <div className="affirmation-container">
@@ -385,7 +425,7 @@ const AffirmationCreator = () => {
         <Button
           type="primary"
           className="generate-button"
-          loading={generateAudioLoading}
+          loading={mode === "voice" ? loadingVoiceGen : generateAudioLoading}
           onClick={handleGenerate}
         >
           <span className="white-emoji">✨</span> Generate Now
