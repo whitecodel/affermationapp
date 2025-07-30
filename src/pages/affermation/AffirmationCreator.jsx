@@ -7,6 +7,7 @@ import {
   RightOutlined,
   PauseCircleOutlined,
   CloseOutlined,
+  AudioOutlined,
 } from "@ant-design/icons";
 import "./AffirmationCreator.scss";
 import InputField from "../../components/InputField";
@@ -376,6 +377,7 @@ const AffirmationCreator = () => {
       {mode === "voice" && (
         <div style={{ marginBottom: 16 }}>
           <Button type="dashed" onClick={() => setIsRecorderOpen(true)}>
+            <AudioOutlined style={{ marginRight: 8 }} />
             Record Custom Audio
           </Button>
           {recordedAudioUrl && (
