@@ -26,7 +26,6 @@ import AudioRecorderDialog from "../../components/AudioRecorderDialog";
 const { TextArea } = Input;
 
 const AffirmationCreator = () => {
-  // const [query, setQuery] = useState('music');
   const [searchInput, setSearchInput] = useState("");
 
   const [affirmations, setAffirmations] = useState([]);
@@ -233,6 +232,8 @@ const AffirmationCreator = () => {
   const voiceOptions = ["John", "Michael", "Alex"];
   const trackOptions = ["Track 1", "Track 2", "Track 3"];
 
+  const [mode, setMode] = useState("text"); // "text" or "voice"
+
   return (
     <div className="affirmation-container">
       <div className="header">
@@ -242,18 +243,71 @@ const AffirmationCreator = () => {
         <p>Generate and add new affirmations to personalize your audio</p>
       </div>
 
-      <div className="selectors">
-        <Button
-          className="select-box"
-          onClick={() => setIsVoiceModalVisible(true)}
+      {/* Toggle Header */}
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
+        <div
+          style={{
+            background: "#f5f6f7",
+            borderRadius: 14,
+            display: "flex",
+            padding: 4,
+            width: 380,
+            maxWidth: "100%",
+          }}
         >
-          <span className="left-text">
-            {selectedVoiceName
-              ? `${selectedVoiceName}'s Voice`
-              : "Select Voice"}
-          </span>
-          <RightOutlined className="right-icon" />
-        </Button>
+          <button
+            style={{
+              flex: 1,
+              border: "none",
+              background: mode === "text" ? "#fff" : "transparent",
+              color: "#6b6775",
+              fontWeight: mode === "text" ? 500 : 500,
+              fontSize: 16,
+              borderRadius: 8,
+              padding: "10px 0",
+              cursor: "pointer",
+              transition: "background 0.2s",
+            }}
+            onClick={() => setMode("text")}
+          >
+            Text Affirmations
+          </button>
+          <button
+            style={{
+              flex: 1,
+              border: "none",
+              background: mode === "voice" ? "#fff" : "transparent",
+              color: "#19171c",
+              fontWeight: mode === "voice" ? 500 : 500,
+              fontSize: 16,
+              borderRadius: 8,
+              padding: "10px 0",
+              cursor: "pointer",
+              transition: "background 0.2s",
+            }}
+            onClick={() => setMode("voice")}
+          >
+            Voice Affirmations
+          </button>
+        </div>
+      </div>
+
+      <div className="selectors">
+        {/* Show "Select Voice" only in Text mode */}
+        {mode === "text" && (
+          <Button
+            className="select-box"
+            onClick={() => setIsVoiceModalVisible(true)}
+          >
+            <span className="left-text">
+              {selectedVoiceName
+                ? `${selectedVoiceName}'s Voice`
+                : "Select Voice"}
+            </span>
+            <RightOutlined className="right-icon" />
+          </Button>
+        )}
+        {/* Always show "Select Background Track" */}
         <Button
           className="select-box"
           onClick={() => setIsTrackModalVisible(true)}
@@ -265,51 +319,64 @@ const AffirmationCreator = () => {
         </Button>
       </div>
 
-      <div className="input-section">
-        <InputField
-          placeholder="What’s in your mind?"
-          className="input-affermation"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
+      {/* Show input and add button only in Text mode */}
+      {mode === "text" && (
+        <div className="input-section">
+          <InputField
+            placeholder="What’s in your mind?"
+            className="input-affermation"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
 
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-          Add
-        </Button>
-      </div>
+          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+            Add
+          </Button>
+        </div>
+      )}
 
-      <div style={{ marginBottom: 16 }}>
-        <Button type="dashed" onClick={() => setIsRecorderOpen(true)}>
-          Record Custom Audio
-        </Button>
-        {recordedAudioUrl && (
-          <div style={{ marginTop: 12 }}>
-            <audio src={recordedAudioUrl} controls style={{ width: "100%" }} />
-          </div>
-        )}
-      </div>
+      {/* Show record button only in Voice mode */}
+      {mode === "voice" && (
+        <div style={{ marginBottom: 16 }}>
+          <Button type="dashed" onClick={() => setIsRecorderOpen(true)}>
+            Record Custom Audio
+          </Button>
+          {recordedAudioUrl && (
+            <div style={{ marginTop: 12 }}>
+              <audio
+                src={recordedAudioUrl}
+                controls
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
+        </div>
+      )}
 
-      <div className="preview-box">
-        {affirmations.length === 0 ? (
-          <div className="empty-state">
-            <img src={assets?.frame} alt="empty" />
-          </div>
-        ) : (
-          <ul className="affirmation-list">
-            {affirmations.map((a, i) => (
-              <li key={i} className="affirmation-item">
-                <span>{a}</span>
-                <div className="remove-box">
-                  <CloseOutlined
-                    className="remove-icon"
-                    onClick={() => handleRemove(i)}
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {/* Show affirmations preview only in Text mode */}
+      {mode === "text" && (
+        <div className="preview-box">
+          {affirmations.length === 0 ? (
+            <div className="empty-state">
+              <img src={assets?.frame} alt="empty" />
+            </div>
+          ) : (
+            <ul className="affirmation-list">
+              {affirmations.map((a, i) => (
+                <li key={i} className="affirmation-item">
+                  <span>{a}</span>
+                  <div className="remove-box">
+                    <CloseOutlined
+                      className="remove-icon"
+                      onClick={() => handleRemove(i)}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       <div className="footer-buttons">
         <Button className="cancel-button btn-height" onClick={goDashboard}>
