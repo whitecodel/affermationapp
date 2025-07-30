@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   generateAffirmationAudio,
   sampleVoiceListFun,
+  generateAffirmationAudioRecord,
 } from "../../redux/reducer/AffermationSlice";
 import { toast } from "react-toastify";
 import AudioRecorderDialog from "../../components/AudioRecorderDialog";
@@ -58,6 +59,7 @@ const AffirmationCreator = () => {
     generateAudio,
     generateAudioLoading,
     generateAudioError,
+    generateAudioRecordLoading,
   } = useSelector((prev) => prev?.affer);
 
   const dispatch = useDispatch();
@@ -121,26 +123,21 @@ const AffirmationCreator = () => {
         formData.append("background_music", selectedTrackMp3);
         formData.append("title", title);
 
-        const response = await fetch(
-          "https://affirmix-backend-894609300755.us-central1.run.app/audiomix/audio-generate-record/",
-          {
-            method: "POST",
-            headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUzNzgyODY3LCJpYXQiOjE3NTM2OTY0NjcsImp0aSI6IjhlZWIxYzkwZTZlMDQ4Zjc4M2Q2ODU4ZTgwMmU4NmY3IiwidXNlcl9pZCI6IjM1NzFlMjJhLWU2ZGItNDYyMS1iMTMzLWNiNjE0YzZlZDA3MiJ9.EN74pNKGjTMnGAaFlDRBwFgstaBmZBt4KWtuUez2dyw",
-              "X-API-KEY": "affirm-2025",
-            },
-            body: formData,
-          }
+        // Use redux thunk instead of fetch
+        const token = ""; // optionally get from auth state if needed
+        const apiKey = "affirm-2025";
+        const data = await dispatch(
+          generateAffirmationAudioRecord({ formData, token, apiKey })
         );
-        const data = await response.json();
-        if (response.ok) {
+        console.log(data, "sdjhhds");
+        if (data?.payload?.status === 201 || data?.payload?.status === 200) {
           toast.success("Voice affirmation generated successfully!");
           navigate("/dashboard");
         } else {
-          toast.error(data?.message || "Failed to generate audio.");
+          toast.error(data?.payload?.message || "Failed to generate audio.");
         }
       } catch (err) {
+        console.log("Error generating voice affirmation:", err);
         toast.error("Failed to generate audio.");
       } finally {
         setLoadingVoiceGen(false);
@@ -425,7 +422,11 @@ const AffirmationCreator = () => {
         <Button
           type="primary"
           className="generate-button"
-          loading={mode === "voice" ? loadingVoiceGen : generateAudioLoading}
+          loading={
+            mode === "voice"
+              ? loadingVoiceGen || generateAudioRecordLoading
+              : generateAudioLoading
+          }
           onClick={handleGenerate}
         >
           <span className="white-emoji">✨</span> Generate Now
